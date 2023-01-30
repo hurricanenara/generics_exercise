@@ -39,7 +39,7 @@ export function createTupleTriplet<First, Second, Third>(firstValue: First, seco
 */
 
 
-export function strictCreateTupleTriplet<T extends string | number, K extends boolean>(firstValue: T, secondValue: K, thirdValue: [T extends infer P ? P : never]): [T, K, [T extends infer P ? P : never]] {
+export function strictCreateTupleTriplet<T extends string | number, K extends boolean, V extends T>(firstValue: T, secondValue: K, thirdValue: V[]): [T, K, V[]] {
   return [firstValue, secondValue, thirdValue]
 }
 
@@ -127,7 +127,7 @@ export class Queue<T> implements IQueue<T> {
   IRepository는 제네릭 인터페이스입니다.
 */
 
-interface IRepository<T extends {'id': any}> {
+interface IRepository<T extends {'id'?: any}> {
   create(doc: T): void;
   findById(id: T['id']): T;
   updateById(id: T['id'], doc: T): T;
