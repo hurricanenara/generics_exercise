@@ -58,7 +58,8 @@ export function strictCreateTupleTriplet<T, U>(
   secondValue: U,
   thirdValue: T[]
 ) {
-  if (firstValue !== thirdValue[0]) {
+  const [third] = thirdValue;
+  if (firstValue !== third) {
     throw new TypeError(`${firstValue}와 ${thirdValue}의 값이 다르다.`);
   }
 
