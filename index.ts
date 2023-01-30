@@ -47,11 +47,11 @@ strictCreateTupleTriplet("123", true, ["123"]); // ✅
 strictCreateTupleTriplet(2023, false, [2023]); // ✅
 
 // 에러 (진도를나갈 수 있도록 확인 후 주석처리하세요)
-strictCreateTupleTriplet(2023, false, [123]); // ❌
-strictCreateTupleTriplet("2023", false, ["i am a string"]); // ❌
+strictCreateTupleTriplet(2023, false, [123]); // ❌ ([123] 부분 에러)
+strictCreateTupleTriplet("2023", false, ["i am a string"]); // ❌ (["i am a string"] 부분 에러)
 
 /*
-  5. getRoleOptions이라는 함수가 있습니다.
+  5. getRoleOptions와 getCuisineOptions라는 함수가 있습니다.
   주어진 enum과 Option<T> 타입을 활용하여 함수를 완성하고 테스트를 pass 하세요.
 */
 
