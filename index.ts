@@ -115,16 +115,16 @@ enum CuisineKey {
 
 export function getRoleOptions() {
   let result: Option<string>[] = [];
-  Object.values(Role).forEach((role, index) => {
-    result.push({ label: RoleKey[index], value: role });
+  Object.values(Role).forEach((val, index) => {
+    result.push({ label: RoleKey[index], value: val });
   });
   return result;
 }
 
 export function getCuisineOptions() {
   let result: Option<string>[] = [];
-  Object.values(Cuisine).forEach((cuisine, index) => {
-    result.push({ label: CuisineKey[index], value: cuisine });
+  Object.values(Cuisine).forEach((val, index) => {
+    result.push({ label: CuisineKey[index], value: val });
   });
   return result;
 }
