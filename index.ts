@@ -203,3 +203,17 @@ const mySecondRecord: EnumRecord = {
   ROLE_CUSTOMER: ["orders"],
   ROLE_SELLER: ["products", "revenue"],
 };
+
+// type EnumRecord<T extends Cuisine | Role> = {
+//   [x in T]: string[];
+// };
+// const myFirstRecord: EnumRecord<Cuisine> = {
+//   CUISINE_ITALIAN: ["pasta", "burrata"],
+//   CUISINE_KOREAN: ["bibimbap", "kimchi"],
+//   CUISINE_THAI: ["tom yum soup", "pad thai"],
+// };
+// const mySecondRecord: EnumRecord<Role> = {
+//   ROLE_ADMIN: ["payroll"],
+//   ROLE_CUSTOMER: ["orders"],
+//   ROLE_SELLER: ["products", "revenue"],
+// };
