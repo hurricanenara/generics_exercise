@@ -54,11 +54,7 @@ export function createTupleTriplet<T, U, V>(
   제네릭을 써서 함수를 완성하세요. (타입 변수, 인자 타입, 반환 타입)
 */
 
-export function strictCreateTupleTriplet<T, U extends boolean, V extends T>(
-  firstValue: T,
-  secondValue: U,
-  thirdValue: V[]
-): [T, U, V[]] {
+export function strictCreateTupleTriplet<T extends number | string, U extends boolean, V extends T>(firstValue: T, secondValue: U, thirdValue: V[]): [T, U, V[]] {
   return [firstValue, secondValue, thirdValue];
 };
 
@@ -71,8 +67,8 @@ strictCreateTupleTriplet(2023, false, [2023]); // ✅
 strictCreateTupleTriplet("123", true, ["123"]); // ✅
 
 // 에러 (진도를나갈 수 있도록 확인 후 주석처리하세요)
-strictCreateTupleTriplet(2023, false, [123]); // ❌ ([123] 부분 에러)
-strictCreateTupleTriplet("2023", false, ["i am a string"]); // ❌ (["i am a string"] 부분 에러)
+// strictCreateTupleTriplet(2023, false, [123]); // ❌ ([123] 부분 에러)
+// strictCreateTupleTriplet("2023", false, ["i am a string"]); // ❌ (["i am a string"] 부분 에러)
 
 /*
   5. getRoleOptions와 getCuisineOptions라는 함수가 있습니다.
