@@ -3,24 +3,37 @@
   힌트: 타입도 변수처럼 type alias로 선언 가능.
 */
 
-type MyDiverseArray = {};
+type MyDiverseArray<T> = T[];
 
-const myDiverseArray = [true, 100, 101, 102, false];
-const anotherDiverseArray = [
-  myDiverseArray,
-  "backend developer",
-  { name: "hermione" },
+const myDiverseArray: MyDiverseArray<number | boolean> = [
+  true,
+  100,
+  101,
+  102,
+  false,
 ];
+const anotherDiverseArray: MyDiverseArray<
+  (number | boolean)[] | string | object
+> = [myDiverseArray, "backend developer", { name: "hermione" }];
 
 /*
   2. stringOnlyArray와 mixedArray에 적용할 수 있는 제네릭 타입 WithDefaultType을 만들되
   stringOnlyArray에는 타입 인자를 전달하지 않아도 컴파일이 되도록 하세요.
 */
 
-type WithDefaultType = {};
+type WithDefaultType<T = string> = T[];
 
-const stringOnlyArray = ["we're", "all", "gonna", "make", "it"];
-const mixedArray = [2023, "year of the rabbit"];
+const stringOnlyArray: WithDefaultType = [
+  "we're",
+  "all",
+  "gonna",
+  "make",
+  "it",
+];
+const mixedArray: WithDefaultType<string | number> = [
+  2023,
+  "year of the rabbit",
+];
 
 /*
   3. createTupleTriplet이라는 함수가 있습니다.
@@ -28,7 +41,13 @@ const mixedArray = [2023, "year of the rabbit"];
   제네릭을 써서 함수를 완성하세요. (타입 변수, 인자 타입, 반환 타입)
 */
 
-export function createTupleTriplet(firstValue, secondValue, thirdValue) {}
+export function createTupleTriplet<T, U, V>(
+  firstValue: T,
+  secondValue: U,
+  thirdValue: V
+): [T, U, V] {
+  return [firstValue, secondValue, thirdValue];
+}
 
 /*
   4. strictCreateTupleTriplet이라는 함수가 있습니다.
@@ -36,7 +55,13 @@ export function createTupleTriplet(firstValue, secondValue, thirdValue) {}
   제네릭을 써서 함수를 완성하세요. (타입 변수, 인자 타입, 반환 타입)
 */
 
-export function strictCreateTupleTriplet(firstValue, secondValue, thirdValue) {}
+export function strictCreateTupleTriplet<
+  T extends string | number, //- T 의 타입을 제약 하면서 값도 종속?
+  U,
+  V extends [T]
+>(firstValue: T, secondValue: U, thirdValue: V): [T, U, V] {
+  return [firstValue, secondValue, thirdValue];
+}
 
 /*
   완성된 함수는 다음과같이 호출이 됐을 때 컴파일이 되거나 에러가 떠야됩니다.
@@ -47,8 +72,13 @@ strictCreateTupleTriplet("123", true, ["123"]); // ✅
 strictCreateTupleTriplet(2023, false, [2023]); // ✅
 
 // 에러 (진도를나갈 수 있도록 확인 후 주석처리하세요)
-strictCreateTupleTriplet(2023, false, [123]); // ❌ ([123] 부분 에러)
-strictCreateTupleTriplet("2023", false, ["i am a string"]); // ❌ (["i am a string"] 부분 에러)
+// strictCreateTupleTriplet(2023, false, [123]); // ❌ ([123] 부분 에러)
+// strictCreateTupleTriplet("2023", false, ["i am a string"]); // ❌ (["i am a string"] 부분 에러)
+
+//- 상속된 타입 변수
+//- 기존에 사용하고 있는 타입을 상속해서 입력 받을 변수의 타입을 제한할 수 있다.
+//- 참조 : https://hyunseob.github.io/2017/01/14/typescript-generic, https://www.typescriptlang.org/docs/handbook/2/generics.html#generic-constraints
+//todo 제네릭 extends 대해 공부 필요
 
 /*
   5. getRoleOptions와 getCuisineOptions라는 함수가 있습니다.
@@ -72,9 +102,25 @@ interface Option<T> {
   value: T;
 }
 
-export function getRoleOptions() {}
+export function getRoleOptions(): Option<Role>[] {
+  return Object.values(Role).map((item) => ({
+    label: item
+      .split("_")[1]
+      .toLowerCase()
+      .replace(/^[a-z]/, (char) => char.toUpperCase()),
+    value: Role[item],
+  }));
+}
 
-export function getCuisineOptions() {}
+export function getCuisineOptions(): Option<Cuisine>[] {
+  return Object.values(Cuisine).map((item) => ({
+    label: `${item
+      .split("_")[1]
+      .toLowerCase()
+      .replace(/^[a-z]/, (char) => char.toUpperCase())} food`,
+    value: Cuisine[item],
+  }));
+}
 
 /*
   6-7. Queue라는 class가 있습니다.
@@ -84,13 +130,26 @@ export function getCuisineOptions() {}
   힌트: 강의자료 Stack 참조하세요.
 */
 
-interface IQueue {
-  enqueue;
-  dequeue;
-  size;
+interface IQueue<T> {
+  enqueue(item: T): void;
+  dequeue(): T | undefined;
+  size(): number;
 }
 
-export class Queue {}
+export class Queue<T> {
+  private storage: T[] = [];
+  constructor() {}
+  enqueue(item: T) {
+    this.storage.push(item);
+  }
+  dequeue(): T | undefined {
+    return this.storage.shift();
+  }
+
+  size(): number {
+    return this.storage.length;
+  }
+}
 
 /*
   8. IRepository라는 인터페이스가 있습니다.
@@ -98,11 +157,11 @@ export class Queue {}
   IRepository는 제네릭 인터페이스입니다.
 */
 
-interface IRepository {
-  create;
-  findById;
-  updateById;
-  deleteById;
+interface IRepository<T, V> {
+  create(data: T): void;
+  findById(id: V): T | undefined;
+  updateById(id: V): void | undefined;
+  deleteById(id: V): void | undefined;
 }
 
 /*
@@ -111,9 +170,11 @@ interface IRepository {
   길이를 알 수 없는 매개변수는 에러가납니다.
 */
 
-export function getLength(input) {}
+export function getLength<T extends { length: number }>(input: T) {
+  return input.length;
+}
 
-getLength(123); // ❌
+// getLength(123); // ❌
 getLength([123]); // ✅
 getLength("12345"); // ✅
 
@@ -122,15 +183,17 @@ getLength("12345"); // ✅
   제네릭을 사용하여 myFirstRecord 그리고 mySecondRecord와 같은 객체를 충족하는 타입을 완성하세요.
 */
 
-type EnumRecord = {};
+type EnumRecord<T extends Cuisine | Role> = {
+  [x in T]: string[];
+};
 
-const myFirstRecord = {
+const myFirstRecord: EnumRecord<Cuisine> = {
   CUISINE_ITALIAN: ["pasta", "burrata"],
   CUISINE_KOREAN: ["bibimbap", "kimchi"],
   CUISINE_THAI: ["tom yum soup", "pad thai"],
 };
 
-const mySecondRecord = {
+const mySecondRecord: EnumRecord<Role> = {
   ROLE_ADMIN: ["payroll"],
   ROLE_CUSTOMER: ["orders"],
   ROLE_SELLER: ["products", "revenue"],
