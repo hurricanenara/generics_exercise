@@ -38,8 +38,8 @@ export function createTupleTriplet<S,U,V>(firstValue:S, secondValue:U, thirdValu
   제네릭을 써서 함수를 완성하세요. (타입 변수, 인자 타입, 반환 타입)
 */
 
-export function strictCreateTupleTriplet<T,S>(firstValue:T, secondValue:S, _thirdValue:T[]): [T,S,T[]] {
-    return [firstValue, secondValue, [firstValue]]
+export function strictCreateTupleTriplet<T extends string | number,S, V extends T>(firstValue:T, secondValue:S, thirdValue:V[]): [T,S,V[]] {
+    return [firstValue, secondValue, thirdValue]
 }
 
 /*
@@ -51,8 +51,8 @@ strictCreateTupleTriplet("123", true, ["123"]); // ✅
 strictCreateTupleTriplet(2023, false, [2023]); // ✅
 
 // 에러 (진도를나갈 수 있도록 확인 후 주석처리하세요)
-strictCreateTupleTriplet(2023, false, [123]); // ❌
-strictCreateTupleTriplet("2023", false, ["i am a string"]); // ❌
+// strictCreateTupleTriplet(2023, false, [123]); // ❌
+// strictCreateTupleTriplet("2023", false, ["i am a string"]); // ❌
 
 /*
   5. getRoleOptions이라는 함수가 있습니다.
@@ -140,10 +140,10 @@ export class Queue<T> implements IQueue<T> {
 */
 
 interface IRepository<T> {
-  create():T;
-  findById():T;
-  updateById():T;
-  deleteById():T;
+  create():T | Error;
+  findById():T | null;
+  updateById():T | Error;
+  deleteById():T | Error;
 }
 
 /*
