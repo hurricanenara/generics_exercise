@@ -57,13 +57,11 @@ export function createTupleTriplet<T, V, U>(
   제네릭을 써서 함수를 완성하세요. (타입 변수, 인자 타입, 반환 타입)
 */
 
-export function strictCreateTupleTriplet<T, U>(
-  firstValue: T,
-  secondValue: U,
-  thirdValue: T[]
-): [T, U, T[]] {
-  if (firstValue !== thirdValue[0])
-    throw new TypeError(`${firstValue}와 ${thirdValue[0]}의 값이 다르다.`);
+export function strictCreateTupleTriplet<
+  T extends string | number,
+  U extends boolean,
+  V extends T[]
+>(firstValue: T, secondValue: U, thirdValue: V): [T, U, V] {
   return [firstValue, secondValue, thirdValue];
 }
 
@@ -101,32 +99,42 @@ interface Option<T> {
   value: T;
 }
 
-enum RoleKey {
-  Admin,
-  Customer,
-  Seller,
-}
+// export function getRoleOptions(): Option<string>[] {
+//   let result: Option<string>[] = [];
+//   Object.values(Role).forEach((val) => {
+//     const str = val.split('_')[1];
+//     result.push({ label: str[0] + str.substring(1).toLowerCase(), value: val });
+//   });
+//   return result;
+// }
 
-enum CuisineKey {
-  'Korean food',
-  'Italian food',
-  'Thai food',
-}
-
-export function getRoleOptions() {
-  let result: Option<string>[] = [];
-  Object.values(Role).forEach((val, index) => {
-    result.push({ label: RoleKey[index], value: val });
+export function getRoleOptions(): Option<Role>[] {
+  return Object.values(Role).map((val) => {
+    const str = val.split('_')[1];
+    return { label: str[0] + str.substring(1).toLowerCase(), value: val };
   });
-  return result;
 }
 
-export function getCuisineOptions() {
-  let result: Option<string>[] = [];
-  Object.values(Cuisine).forEach((val, index) => {
-    result.push({ label: CuisineKey[index], value: val });
+// export function getCuisineOptions() {
+//   let result: Option<string>[] = [];
+//   Object.values(Cuisine).forEach((val, index) => {
+//     const str = val.split('_')[1];
+//     result.push({
+//       label: str[0] + str.substring(1).toLowerCase() + ' food',
+//       value: val,
+//     });
+//   });
+//   return result;
+// }
+
+export function getCuisineOptions(): Option<Cuisine>[] {
+  return Object.values(Cuisine).map((val) => {
+    const str = val.split('_')[1];
+    return {
+      label: str[0] + str.substring(1).toLowerCase() + ' food',
+      value: val,
+    };
   });
-  return result;
 }
 
 /*
@@ -175,13 +183,13 @@ console.log(numberQueue.size());
 */
 
 interface IRepository<T> {
-  create(data: T): void;
-  findById(id: number): T | undefined;
-  updateById(id: number): void;
-  deleteById(id: number): void;
+  create(data: T): Promise<T>;
+  findById(id: number): Promise<T> | null;
+  updateById(id: number, data: T): Promise<T>;
+  deleteById(id: number): Promise<number>;
 }
 
-/*
+/* 
   9. getLength라는 함수가 있습니다.
   제네릭을 사용하여 매개변수의 길이를 반환하도록하세요.
   길이를 알 수 없는 매개변수는 에러가납니다.
@@ -203,7 +211,7 @@ getLength('12345'); // ✅
   제네릭을 사용하여 myFirstRecord 그리고 mySecondRecord와 같은 객체를 충족하는 타입을 완성하세요.
 */
 
-type EnumRecord<T> = { [key: string]: T[] };
+type EnumRecord<T> = { [key in Role | Cuisine]?: T[] };
 
 const myFirstRecord: EnumRecord<string> = {
   CUISINE_ITALIAN: ['pasta', 'burrata'],
