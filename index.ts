@@ -140,6 +140,8 @@ interface IQueue<T> {
 export class Queue<T> implements IQueue<T> {
   private list: T[] = [];
 
+  constructor() {}
+
   enqueue(item: T) {
     this.list.push(item);
   }
