@@ -176,6 +176,11 @@ export function getLength<T>(input: string | T[]): number {
   return input.length;
 }
 
+// 똑같음
+// export function getLength<T extends string | T[]>(input: T): number {
+//   return input.length;
+// }
+
 // getLength(123); // ❌
 getLength([123]); // ✅
 getLength("12345"); // ✅
