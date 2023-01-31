@@ -3,24 +3,39 @@
   힌트: 타입도 변수처럼 type alias로 선언 가능.
 */
 
-type MyDiverseArray = {};
-
-const myDiverseArray = [true, 100, 101, 102, false];
-const anotherDiverseArray = [
-  myDiverseArray,
-  "backend developer",
-  { name: "hermione" },
+type MyDiverseArray<T> = T[];
+type Name = {
+  name: string;
+};
+const myDiverseArray: MyDiverseArray<boolean | number> = [
+  true,
+  100,
+  101,
+  102,
+  false,
 ];
+const anotherDiverseArray: MyDiverseArray<
+  MyDiverseArray<boolean | number> | string | Name
+> = [myDiverseArray, "backend developer", { name: "hermione" }];
 
 /*
   2. stringOnlyArray와 mixedArray에 적용할 수 있는 제네릭 타입 WithDefaultType을 만들되
   stringOnlyArray에는 타입 인자를 전달하지 않아도 컴파일이 되도록 하세요.
 */
 
-type WithDefaultType = {};
+type WithDefaultType<T> = T[];
 
-const stringOnlyArray = ["we're", "all", "gonna", "make", "it"];
-const mixedArray = [2023, "year of the rabbit"];
+const stringOnlyArray: WithDefaultType<string> = [
+  "we're",
+  "all",
+  "gonna",
+  "make",
+  "it",
+];
+const mixedArray: WithDefaultType<number | string> = [
+  2023,
+  "year of the rabbit",
+];
 
 /*
   3. createTupleTriplet이라는 함수가 있습니다.
@@ -28,7 +43,13 @@ const mixedArray = [2023, "year of the rabbit"];
   제네릭을 써서 함수를 완성하세요. (타입 변수, 인자 타입, 반환 타입)
 */
 
-export function createTupleTriplet(firstValue, secondValue, thirdValue) {}
+export function createTupleTriplet<T, V, A>(
+  firstValue: T,
+  secondValue: V,
+  thirdValue: A
+): [T, V, A] {
+  return [firstValue, secondValue, thirdValue];
+}
 
 /*
   4. strictCreateTupleTriplet이라는 함수가 있습니다.
@@ -36,7 +57,13 @@ export function createTupleTriplet(firstValue, secondValue, thirdValue) {}
   제네릭을 써서 함수를 완성하세요. (타입 변수, 인자 타입, 반환 타입)
 */
 
-export function strictCreateTupleTriplet(firstValue, secondValue, thirdValue) {}
+export function strictCreateTupleTriplet<T, V, A>(
+  firstValue: T,
+  secondValue: V,
+  thirdValue: A
+): [T, V, A] {
+  return [firstValue, secondValue, thirdValue];
+}
 
 /*
   완성된 함수는 다음과같이 호출이 됐을 때 컴파일이 되거나 에러가 떠야됩니다.
@@ -72,9 +99,21 @@ interface Option<T> {
   value: T;
 }
 
-export function getRoleOptions() {}
+export function getRoleOptions(): Option<Role>[] {
+  return [
+    { label: "Admin", value: Role.ROLE_ADMIN },
+    { label: "Customer", value: Role.ROLE_CUSTOMER },
+    { label: "Seller", value: Role.ROLE_SELLER },
+  ];
+}
 
-export function getCuisineOptions() {}
+export function getCuisineOptions(): Option<Cuisine>[] {
+  return [
+    { label: "Korean food", value: Cuisine.CUISINE_KOREAN },
+    { label: "Italian food", value: Cuisine.CUISINE_ITALIAN },
+    { label: "Thai food", value: Cuisine.CUISINE_THAI },
+  ];
+}
 
 /*
   6-7. Queue라는 class가 있습니다.
@@ -84,13 +123,27 @@ export function getCuisineOptions() {}
   힌트: 강의자료 Stack 참조하세요.
 */
 
-interface IQueue {
-  enqueue;
-  dequeue;
-  size;
+interface IQueue<T> {
+  enqueue(item: T): void;
+  dequeue(): T | undefined;
+  size(): number;
 }
 
-export class Queue {}
+export class Queue<T> implements IQueue<T> {
+  private queue: T[] = [];
+
+  enqueue(item: T): void {
+    this.queue.push(item);
+  }
+
+  dequeue(): T | undefined {
+    return this.queue.shift();
+  }
+
+  size(): number {
+    return this.queue.length;
+  }
+}
 
 /*
   8. IRepository라는 인터페이스가 있습니다.
@@ -98,11 +151,11 @@ export class Queue {}
   IRepository는 제네릭 인터페이스입니다.
 */
 
-interface IRepository {
-  create;
-  findById;
-  updateById;
-  deleteById;
+interface IRepository<T> {
+  create(info : T) : void
+  findById(id: number) : T
+  updateById(id:number) : void;
+  deleteById(id:number) : void;
 }
 
 /*
@@ -111,9 +164,11 @@ interface IRepository {
   길이를 알 수 없는 매개변수는 에러가납니다.
 */
 
-export function getLength(input) {}
+export function getLength<T extends string | number[] | string[]>(input:T) : number {
+  return input.length
+}
 
-getLength(123); // ❌
+// getLength(123); // ❌
 getLength([123]); // ✅
 getLength("12345"); // ✅
 
@@ -122,15 +177,17 @@ getLength("12345"); // ✅
   제네릭을 사용하여 myFirstRecord 그리고 mySecondRecord와 같은 객체를 충족하는 타입을 완성하세요.
 */
 
-type EnumRecord = {};
+type EnumRecord<T extends Role | Cuisine > = {
+   [key in T]: string[]
+};
 
-const myFirstRecord = {
+const myFirstRecord : EnumRecord<Cuisine> = {
   CUISINE_ITALIAN: ["pasta", "burrata"],
   CUISINE_KOREAN: ["bibimbap", "kimchi"],
   CUISINE_THAI: ["tom yum soup", "pad thai"],
 };
 
-const mySecondRecord = {
+const mySecondRecord : EnumRecord<Role>= {
   ROLE_ADMIN: ["payroll"],
   ROLE_CUSTOMER: ["orders"],
   ROLE_SELLER: ["products", "revenue"],
