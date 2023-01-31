@@ -3,24 +3,37 @@
   힌트: 타입도 변수처럼 type alias로 선언 가능.
 */
 
-type MyDiverseArray = {};
+type MyDiverseArray<T> = {};
 
-const myDiverseArray = [true, 100, 101, 102, false];
-const anotherDiverseArray = [
-  myDiverseArray,
-  "backend developer",
-  { name: "hermione" },
+const myDiverseArray: MyDiverseArray<Array<number | boolean>> = [
+  true,
+  100,
+  101,
+  102,
+  false,
 ];
+const anotherDiverseArray: MyDiverseArray<
+  Array<number[] | string | boolean[]>
+> = [myDiverseArray, "backend developer", { name: "hermione" }];
 
 /*
   2. stringOnlyArray와 mixedArray에 적용할 수 있는 제네릭 타입 WithDefaultType을 만들되
   stringOnlyArray에는 타입 인자를 전달하지 않아도 컴파일이 되도록 하세요.
 */
 
-type WithDefaultType = {};
+type WithDefaultType<T = string[]> = {};
 
-const stringOnlyArray = ["we're", "all", "gonna", "make", "it"];
-const mixedArray = [2023, "year of the rabbit"];
+const stringOnlyArray: WithDefaultType = [
+  "we're",
+  "all",
+  "gonna",
+  "make",
+  "it",
+];
+const mixedArray: WithDefaultType<number[] | string[]> = [
+  2023,
+  "year of the rabbit",
+];
 
 /*
   3. createTupleTriplet이라는 함수가 있습니다.
@@ -28,7 +41,13 @@ const mixedArray = [2023, "year of the rabbit"];
   제네릭을 써서 함수를 완성하세요. (타입 변수, 인자 타입, 반환 타입)
 */
 
-export function createTupleTriplet(firstValue, secondValue, thirdValue) {}
+export function createTupleTriplet<T>(
+  firstValue: T,
+  secondValue: T,
+  thirdValue: T
+): Array<string | number | Array<string>> {
+  return ["1234", 1234, ["1234"]];
+}
 
 /*
   4. strictCreateTupleTriplet이라는 함수가 있습니다.
@@ -36,7 +55,17 @@ export function createTupleTriplet(firstValue, secondValue, thirdValue) {}
   제네릭을 써서 함수를 완성하세요. (타입 변수, 인자 타입, 반환 타입)
 */
 
-export function strictCreateTupleTriplet(firstValue, secondValue, thirdValue) {}
+export function strictCreateTupleTriplet<T>(
+  firstValue: string | number,
+  secondValue: boolean,
+  thirdValue: Array<T>
+): Array<string | number | boolean | Array<T>> {
+  const fstVal = firstValue;
+  const sndVal = secondValue;
+  const TndVal = thirdValue;
+  const arr = [fstVal, sndVal, TndVal];
+  return arr;
+}
 
 /*
   완성된 함수는 다음과같이 호출이 됐을 때 컴파일이 되거나 에러가 떠야됩니다.
@@ -72,7 +101,9 @@ interface Option<T> {
   value: T;
 }
 
-export function getRoleOptions() {}
+export function getRoleOptions<T>(data: T): T {
+  return data;
+}
 
 export function getCuisineOptions() {}
 
@@ -84,10 +115,10 @@ export function getCuisineOptions() {}
   힌트: 강의자료 Stack 참조하세요.
 */
 
-interface IQueue {
-  enqueue;
-  dequeue;
-  size;
+interface IQueue<T> {
+  enqueue(itme: T): void;
+  dequeue: T | undefined;
+  size: T | undefined;
 }
 
 export class Queue {}
@@ -98,11 +129,11 @@ export class Queue {}
   IRepository는 제네릭 인터페이스입니다.
 */
 
-interface IRepository {
-  create;
-  findById;
-  updateById;
-  deleteById;
+interface IRepository<T = string | number | boolean> {
+  create: boolean;
+  findById: T;
+  updateById: Date;
+  deleteById: T;
 }
 
 /*
@@ -111,7 +142,9 @@ interface IRepository {
   길이를 알 수 없는 매개변수는 에러가납니다.
 */
 
-export function getLength(input) {}
+export function getLength<T>(input: T) {
+  return Object.keys(input).length;
+}
 
 getLength(123); // ❌
 getLength([123]); // ✅
