@@ -53,16 +53,11 @@ export function createTupleTriplet<T, U, V>(
   제네릭을 써서 함수를 완성하세요. (타입 변수, 인자 타입, 반환 타입)
 */
 
-export function strictCreateTupleTriplet<T, U>(
-  firstValue: T,
-  secondValue: U,
-  thirdValue: T[]
-) {
-  const [third] = thirdValue;
-  if (firstValue !== third) {
-    throw new TypeError(`${firstValue}와 ${thirdValue}의 값이 다르다.`);
-  }
-
+export function strictCreateTupleTriplet<
+  T extends string | number,
+  U extends boolean,
+  V extends T[]
+>(firstValue: T, secondValue: U, thirdValue: V) {
   return [firstValue, secondValue, thirdValue];
 }
 
@@ -95,37 +90,31 @@ enum Cuisine {
   CUISINE_THAI = 'CUISINE_THAI',
 }
 
-enum RoleLabel {
-  Admin,
-  Customer,
-  Seller,
-}
-
-enum CuisineLabel {
-  KOREAN_FOOD = 'Korean food',
-  ITALIAN_FOOD = 'Italian food',
-  THAI_FOOD = 'Thai food',
-}
-
 interface Option<T> {
   label: string;
   value: T;
 }
 
-export function getRoleOptions() {
-  const result: Option<Role>[] = [];
-  Object.values(Role).forEach((value, index) => {
-    result.push({ label: RoleLabel[index], value: value });
+export function getRoleOptions(): Option<Role>[] {
+  return Object.values(Role).map((value) => {
+    const labelString = value.split('_')[1];
+    return {
+      label: labelString[0] + labelString.substring(1).toLowerCase(),
+      value: value,
+    };
   });
-  return result;
 }
 
-export function getCuisineOptions() {
-  const result: Option<Cuisine>[] = [];
-  Object.values(Cuisine).forEach((value, index) => {
-    result.push({ label: Object.values(CuisineLabel)[index], value: value });
+export function getCuisineOptions(): Option<Cuisine>[] {
+  return Object.values(Cuisine).map((value) => {
+    const labelFood = ' food';
+    const labelString = value.split('_')[1];
+    return {
+      label:
+        labelString[0] + labelString.substring(1).toLowerCase() + labelFood,
+      value: value,
+    };
   });
-  return result;
 }
 
 /*
@@ -170,10 +159,10 @@ export class Queue<T> implements IQueue<T> {
 */
 
 interface IRepository<T> {
-  create(data: T): void;
-  findById(id: number): T | undefined;
-  updateById(id: number): void;
-  deleteById(id: number): void;
+  create(data: T): Promise<T>;
+  findById(id: number): Promise<T> | null;
+  updateById(id: number, data: T): Promise<T>;
+  deleteById(id: number): Promise<number>;
 }
 
 /*
@@ -200,7 +189,7 @@ getLength('12345'); // ✅
 */
 
 type EnumRecord<T> = {
-  [key: string]: T[];
+  [key in Cuisine | Role]?: T[];
 };
 
 const myFirstRecord: EnumRecord<string> = {
